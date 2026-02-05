@@ -6,6 +6,7 @@ import org.example.block5travelblog.data.MailData;
 import org.example.block5travelblog.enums.MailStatus;
 import org.example.block5travelblog.messaging.EmailMessage;
 import org.example.block5travelblog.repository.MailRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,12 @@ public class MailServiceImpl implements MailService {
     private final JavaMailSender mailSender;
     private final MailRepository mailRepository;
 
+    @Value("${mail.retry.maxAttempts}")
+    private int maxAttempts;
+
+    @Value("${mail.adminMail}")
+    private String adminMail;
+
     /**
      * Processes a new incoming email message.
      * Converts the DTO to a MailData entity, saves it, and attempts to send.
@@ -39,13 +46,13 @@ public class MailServiceImpl implements MailService {
 
     /**
      * Attempts to send an email. Updates status (SEND or ERROR) depending on success or failure.
-     * If the number of attempts exceeds 5, marks the mail as FAILED.
+     * If the number of attempts exceeds maxAttempts, marks the mail as FAILED.
      *
      * @param mailData the mail entity to send
      */
     @Override
     public void attemptToSend(MailData mailData) {
-        if (mailData.getAttemptCount() >= 5) {
+        if (mailData.getAttemptCount() >= maxAttempts) {
             log.info("Mail {} exceeded max retry attempts", mailData.getId());
             mailData.setStatus(MailStatus.FAILED);
             mailData.setErrorMessage("Exceeded max retry attempts");
@@ -73,7 +80,8 @@ public class MailServiceImpl implements MailService {
 
     private SimpleMailMessage createSimpleMailMessage(MailData mailData) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(mailData.getRecipientsEmails().toArray(new String[0]));
+//        message.setTo(mailData.getRecipientsEmails().toArray(new String[0]));
+        message.setTo(adminMail); //  IT'S TEMPORARY!
         message.setSubject(mailData.getSubject());
         message.setText(mailData.getContent());
         return message;
