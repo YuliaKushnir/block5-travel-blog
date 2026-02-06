@@ -13,9 +13,9 @@ services:
     environment:
       SPRING_APPLICATION_NAME: mail-service
 
-      SPRING_CONFIG_IMPORT: optional:consul:/
-      SPRING_CLOUD_CONSUL_HOST: consul
-      SPRING_CLOUD_CONSUL_PORT: 8500
+#      SPRING_CONFIG_IMPORT: optional:consul:/
+#      SPRING_CLOUD_CONSUL_HOST: consul
+#      SPRING_CLOUD_CONSUL_PORT: 8500
 
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
