@@ -9,5 +9,4 @@ public class Block5TravelBlogApplication {
     public static void main(String[] args) {
         SpringApplication.run(Block5TravelBlogApplication.class, args);
     }
-
 }
